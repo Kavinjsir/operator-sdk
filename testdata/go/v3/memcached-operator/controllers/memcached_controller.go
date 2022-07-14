@@ -80,6 +80,12 @@ type MemcachedReconciler struct {
 // - About Controllers: https://kubernetes.io/docs/concepts/architecture/controller/
 // - https://pkg.go.dev/sigs.k8s.io/controller-runtime@v0.13.0/pkg/reconcile
 func (r *MemcachedReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
+	// Update metrics after processing each item
+	reconcileStartTS := time.Now()
+	defer func() {
+		updateMetrics(time.Since(reconcileStartTS))
+	}()
+
 	log := log.FromContext(ctx)
 
 	// Fetch the Memcached instance
@@ -447,4 +453,10 @@ func (r *MemcachedReconciler) SetupWithManager(mgr ctrl.Manager) error {
 		For(&cachev1alpha1.Memcached{}).
 		Owns(&appsv1.Deployment{}).
 		Complete(r)
+}
+
+// updateMetrics updates prometheus metrics within the controller.
+func updateMetrics(reconcileTime time.Duration) {
+	MemcachedOperatorReconcileTime.WithLabelValues("memcached-operator").Observe(reconcileTime.Seconds())
+	MemcachedOperatorReconcileTotal.WithLabelValues("memcached-operator").Inc()
 }

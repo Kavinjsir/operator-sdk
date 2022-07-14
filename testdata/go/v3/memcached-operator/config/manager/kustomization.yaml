@@ -4,5 +4,5 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 images:
 - name: controller
-  newName: quay.io/example/memcached-operator
-  newTag: v0.0.1
+  newName: tyfactory/memcached-operator
+  newTag: 0.0.5

@@ -1,3 +1,7 @@
+# Custom by: tony
+testdata/go/v3/memcached-operator/grafana
+testdata/go/v3/memcached-operator/config/samples/cache_v1alpha1_memcached.yaml
+
 # Folders
 .idea
 
